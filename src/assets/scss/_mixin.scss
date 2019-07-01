@@ -1,0 +1,19 @@
+@mixin wh($w, $h) {
+  width: $w;
+  height: $h;
+}
+
+@mixin margin-tl($t, $l) {
+  margin-top: $t;
+  margin-left: $l;
+}
+
+@mixin margin-tb($t, $b) {
+  margin-top: $t;
+  margin-bottom: $b;
+}
+
+@mixin padding-lr($l, $r) {
+  padding-left: $l;
+  padding-right: $r;
+}
