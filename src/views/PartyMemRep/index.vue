@@ -85,7 +85,7 @@
       </div>
     </el-dialog>
 
-    <!-- 修改党员信息 -->
+    <!-- 修改党员报到信息 -->
     <el-dialog title="修改党员报到信息" :visible.sync="editDialogFormVisible">
       <el-form :model="selectedTable">
         <el-form-item label="姓名" label-width="140px">
@@ -150,6 +150,8 @@
 </template>
 
 <script>
+import { formatTime } from "@/utils/format";
+
 export default {
   data() {
     return {
@@ -181,7 +183,22 @@ export default {
               type: "warning"
             });
           } else {
-            this.passTableData = res.data.data;
+            const data = {
+              page: this.currentPage,
+              rows: this.rows
+            };
+            this.$http
+              .get("/api/partyMem/rep/count", data)
+              .then(res => {
+                this.passTableData = res.data.result;
+                this.passTableData.forEach(function(element) {
+                  element.time = formatTime(element.time);
+                });
+                this.total = res.data.result.length;
+              })
+              .catch(err => {
+                console.log("获取总数失败");
+              });
           }
         })
         .catch(err => {
@@ -272,6 +289,11 @@ export default {
       this.addDialogFormVisible = true;
     },
     handleDelete(row) {
+
+      const data = {
+        _id: row._id
+      };
+
       this.$http
         .post("/api/partyMem/rep/delete", data)
         .then(res => {

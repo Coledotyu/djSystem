@@ -59,7 +59,7 @@ router.post('/partyMem/rep/add', (req, res) => {
     address: req.body.address,
     party_branch: req.body.party_branch,
     specialty: req.body.specialty,
-    time: this.body.time  // 报到时间
+    time: req.body.time // 报到时间
   });
 
   partyMemRep.save(function (err, data) {
@@ -215,15 +215,15 @@ router.get('/partyMem/rep/query/all', (req, res) => {
 router.post('/partyMem/info/add', (req, res) => {
 
   let partyMemInfo = new PartyMemInfo({
-    name: req.body.data.name,
-    age: req.body.data.age,
-    gender: req.body.data.gender,
-    party_time: req.body.data.party_time,
-    phone_number: req.body.data.phone_number,
-    address: req.body.data.address,
-    party_branch: req.body.data.data.party_branch,
-    specialty: req.body.data.specialty,
-    honor: req.body.data.honor
+    name: req.body.name,
+    age: req.body.age,
+    gender: req.body.gender,
+    party_time: req.body.party_time,
+    phone_number: req.body.phone_number,
+    address: req.body.address,
+    party_branch: req.body.party_branch,
+    specialty: req.body.specialty,
+    honor: req.body.honor
   });
 
   partyMemInfo.save((err, data) => {
@@ -285,15 +285,15 @@ router.post('/partyMem/info/delete', (req, res) => {
 router.post('/partyMem/info/modify', (req, res) => {
 
   let updatedPartyMemInfo = {
-    name: req.body.data.name,
-    age: req.body.data.age,
-    gender: req.body.data.gender,
-    party_time: req.body.data.party_time,
-    phone_number: req.body.data.phone_number,
-    address: req.body.data.address,
-    party_branch: req.body.data.party_branch,
-    specialty: req.body.data.specialty,
-    honor: req.body.data.honor
+    name: req.body.name,
+    age: req.body.age,
+    gender: req.body.gender,
+    party_time: req.body.party_time,
+    phone_number: req.body.phone_number,
+    address: req.body.address,
+    party_branch: req.body.party_branch,
+    specialty: req.body.specialty,
+    honor: req.body.honor
   };
 
   if (req.body._id.match(/^[0-9a-fA-F]{24}$/)) {
@@ -362,6 +362,7 @@ router.get('/partyMem/info/query', (req, res) => {
 // 党员信息管理，查看所有党员信息
 router.get('/partyMem/info/query/all', (req, res) => {
 
+
   PartyMemInfo.find((err, data) => {
     if (err) {
       res.send({
@@ -388,14 +389,14 @@ router.get('/partyMem/info/query/all', (req, res) => {
 router.post('/meetingRecord/add', (req, res) => {
 
   let meetingInfo = new MeetingInfo({
-    meeting_theme: req.body.data.meeting_theme,
-    meeting_time: req.body.data.meeting_time,
-    meeting_address: req.body.data.meeting_address,
-    meeting_moderator: req.body.data.meeting_moderator,
-    meeting_attendee: req.body.data.meeting_attendee,
-    meeting_absentee: req.body.data.meeting_absentee,
-    meeting_content: req.body.data.meeting_content,
-    meeting_photo_url: req.body.data.meeting_photo_url,
+    meeting_theme: req.body.meeting_theme,
+    meeting_time: req.body.meeting_time,
+    meeting_address: req.body.meeting_address,
+    meeting_moderator: req.body.meeting_moderator,
+    meeting_attendee: req.body.meeting_attendee,
+    meeting_absentee: req.body.meeting_absentee,
+    meeting_content: req.body.meeting_content,
+    meeting_photo_url: req.body.meeting_photo_url,
   });
 
   meetingInfo.save((err, data) => {
@@ -593,13 +594,13 @@ router.post('/infoCommunicating/add', (req, res) => {
 router.post('/infoCommunicating/modify', (req, res) => {
 
   let updatedInfoCommunicating = {
-    post_theme: req.body.data.post_theme,
-    post_owner: req.body.data.post_owner,
-    published_time: req.body.data.published_time,
-    post_content_address: req.body.data.post_content_address,
-    post_content_salary: req.body.data.post_content_salary,
-    post_content_duration: req.body.data.post_content_duration,
-    post_content_comms: req.body.data.post_content_comms,
+    post_theme: req.body.post_theme,
+    post_owner: req.body.post_owner,
+    published_time: req.body.published_time,
+    post_content_address: req.body.post_content_address,
+    post_content_salary: req.body.post_content_salary,
+    post_content_duration: req.body.post_content_duration,
+    post_content_comms: req.body.post_content_comms,
   };
 
   if (req.body._id.match(/^[0-9a-fA-F]{24}$/)) {
@@ -719,6 +720,110 @@ router.get('/infoCommunicating/query/all', (req, res) => {
           'data': data
         });
       }
+    }
+  });
+});
+
+// 获取信息交流document的总数
+router.get('/infoCommunicating/count', (req, res) => {
+  
+  let page = req.body.page;
+  let rows = req.body.rows;
+  let skip = (page - 1) * rows;
+  let params = {};
+
+  let InfoCommunicatingModel = InfoCommunicating.find(params).skip(skip).limit(rows);
+  InfoCommunicatingModel.exec((err, rs) => {
+    if(err) {
+      res.json({
+        status: '1001',
+        message: err.message
+      });
+    } else {
+
+      res.json({
+        status: '1000',
+        msg: '成功',
+        result: rs
+      });
+    }
+  });
+});
+
+// 获取会议记录document的总数
+router.get('/meetingInfo/count', (req, res) => {
+  
+  let page = req.body.page;
+  let rows = req.body.rows;
+  let skip = (page - 1) * rows;
+  let params = {};
+
+  let MeetingInfoModel = MeetingInfo.find(params).skip(skip).limit(rows);
+  MeetingInfoModel.exec((err, rs) => {
+    if(err) {
+      res.json({
+        status: '1001',
+        message: err.message
+      });
+    } else {
+
+      res.json({
+        status: '1000',
+        msg: '成功',
+        result: rs
+      });
+    }
+  });
+});
+
+// 获取党员报到document的总数
+router.get('/partyMem/rep/count', (req, res) => {
+  
+  let page = req.body.page;
+  let rows = req.body.rows;
+  let skip = (page - 1) * rows;
+  let params = {};
+
+  let PartyMemRepModel = PartyMemRep.find(params).skip(skip).limit(rows);
+  PartyMemRepModel.exec((err, rs) => {
+    if(err) {
+      res.json({
+        status: '1001',
+        message: err.message
+      });
+    } else {
+
+      res.json({
+        status: '1000',
+        msg: '成功',
+        result: rs
+      });
+    }
+  });
+});
+
+// 获取党员的document的总数
+router.get('/partyMem/info/count', (req, res) => {
+  
+  let page = req.body.page;
+  let rows = req.body.rows;
+  let skip = (page - 1) * rows;
+  let params = {};
+
+  let PartyMemInfoModel = PartyMemInfo.find(params).skip(skip).limit(rows);
+  PartyMemInfoModel.exec((err, rs) => {
+    if(err) {
+      res.json({
+        status: '1001',
+        message: err.message
+      });
+    } else {
+
+      res.json({
+        status: '1000',
+        msg: '成功',
+        result: rs
+      });
     }
   });
 });
