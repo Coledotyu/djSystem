@@ -65,7 +65,7 @@ export default {
               type: "success"
             });
             this.$router.push({
-              name: "Management"
+              name: "PartyMemRepCount"
             });
           }
         })

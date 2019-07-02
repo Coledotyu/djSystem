@@ -3,8 +3,8 @@
     <el-row style="height: 100%">
       <el-col :span="4">
 				<el-menu :default-active="defaultActive" style="min-height: 100%;" theme="dark" router unique-opened>
-						<el-menu-item index="management">Home</el-menu-item>
-						<el-menu-item index="partyMemRepCount">党员报到统计</el-menu-item>
+						<!-- <el-menu-item index="management">Home</el-menu-item> -->
+						<el-menu-item index="partyMemRepCount">Home</el-menu-item>
 						<el-menu-item index="partyMemRep">党员报道</el-menu-item>
 						<el-menu-item index="partyMemInfo">党员信息</el-menu-item>
 						<el-menu-item index="meetingRecord">会议记录</el-menu-item>

@@ -298,27 +298,33 @@ export default {
       this.addDialogFormVisible = true;
     },
     handleDelete(row) {
-      const data = {
-        _id: row._id
-      };
+      this.$confirm("确定删除?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        const data = {
+          _id: row._id
+        };
 
-      this.$http
-        .post("/api/partyMem/info/delete", data)
-        .then(res => {
-          this.getPartyMemInfoTable();
-          this.$message({
-            message: "删除成功！",
-            type: "success"
+        this.$http
+          .post("/api/partyMem/info/delete", data)
+          .then(res => {
+            this.getPartyMemInfoTable();
+            this.$message({
+              message: "删除成功！",
+              type: "success"
+            });
+          })
+          .catch(err => {
+            this.$message({
+              message: "删除失败!",
+              type: "error"
+            });
           });
-        })
-        .catch(err => {
-          this.$message({
-            message: "删除失败!",
-            type: "error"
-          });
-        });
 
-      this.getPartyMemInfoTable();
+        this.getPartyMemInfoTable();
+      });
     }
   }
 };

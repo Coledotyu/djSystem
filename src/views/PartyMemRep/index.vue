@@ -185,7 +185,7 @@ export default {
           this.passTableData.forEach(function(element) {
             element.time = formatTime(element.time);
           });
-          this.$http.get('/api/partyMem/rep/query/count').then(res => {
+          this.$http.get("/api/partyMem/rep/query/count").then(res => {
             this.total = res.data.data.length;
           });
         })
@@ -277,27 +277,33 @@ export default {
       this.addDialogFormVisible = true;
     },
     handleDelete(row) {
-      const data = {
-        _id: row._id
-      };
+      this.$confirm("确定删除?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        const data = {
+          _id: row._id
+        };
 
-      this.$http
-        .post("/api/partyMem/rep/delete", data)
-        .then(res => {
-          this.getPartyMemRepTable();
-          this.$message({
-            message: "删除成功！",
-            type: "success"
+        this.$http
+          .post("/api/partyMem/rep/delete", data)
+          .then(res => {
+            this.getPartyMemRepTable();
+            this.$message({
+              message: "删除成功！",
+              type: "success"
+            });
+          })
+          .catch(err => {
+            this.$message({
+              message: "删除失败!",
+              type: "error"
+            });
           });
-        })
-        .catch(err => {
-          this.$message({
-            message: "删除失败!",
-            type: "error"
-          });
-        });
 
-      this.getPartyMemRepTable();
+        this.getPartyMemRepTable();
+      });
     }
   }
 };

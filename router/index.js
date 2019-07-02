@@ -595,7 +595,7 @@ router.get('/infoCommunicating/query/count', (req, res) => {
 
 // 按照分页返回相应的document
 router.post('/infoCommunicating/query/all', (req, res) => {
-  
+
   let page = req.body.page;
   let rows = req.body.rows;
   let skip = (page - 1) * rows;
@@ -603,7 +603,7 @@ router.post('/infoCommunicating/query/all', (req, res) => {
 
   let InfoCommunicatingModel = InfoCommunicating.find(params).skip(skip).limit(rows);
   InfoCommunicatingModel.exec((err, rs) => {
-    if(err) {
+    if (err) {
       res.json({
         status: '1001',
         message: err.message
@@ -620,7 +620,7 @@ router.post('/infoCommunicating/query/all', (req, res) => {
 });
 
 router.post('/meetingRecord/query/all', (req, res) => {
-  
+
   let page = req.body.page;
   let rows = req.body.rows;
   let skip = (page - 1) * rows;
@@ -628,7 +628,7 @@ router.post('/meetingRecord/query/all', (req, res) => {
 
   let MeetingInfoModel = MeetingInfo.find(params).skip(skip).limit(rows);
   MeetingInfoModel.exec((err, rs) => {
-    if(err) {
+    if (err) {
       res.json({
         status: '1001',
         message: err.message
@@ -654,7 +654,7 @@ router.post('/partyMem/rep/query/all', (req, res) => {
   let PartyMemRepModel = PartyMemRep.find(params).skip(skip).limit(rows);
 
   PartyMemRepModel.exec((err, rs) => {
-    if(err) {
+    if (err) {
       res.json({
         status: '1001',
         message: err.message
@@ -670,7 +670,7 @@ router.post('/partyMem/rep/query/all', (req, res) => {
 });
 
 router.post('/partyMem/info/query/all', (req, res) => {
-  
+
   let page = req.body.page;
   let rows = req.body.rows;
   let skip = (page - 1) * rows;
@@ -678,7 +678,7 @@ router.post('/partyMem/info/query/all', (req, res) => {
 
   let PartyMemInfoModel = PartyMemInfo.find(params).skip(skip).limit(rows);
   PartyMemInfoModel.exec((err, rs) => {
-    if(err) {
+    if (err) {
       res.json({
         status: '1001',
         message: err.message
@@ -691,6 +691,36 @@ router.post('/partyMem/info/query/all', (req, res) => {
       });
     }
   });
+});
+
+// 查询今年每月的报到人数
+router.post('/partyMem/rep/perMonth/count', (req, res) => {
+
+  const maxTime = req.body.time;
+  const month = req.body.month;
+  const year = req.body.year + '-01' + '-01';
+  const minTime = new Date(year);
+  PartyMemRep.find({
+    time: {
+      "$gte": minTime,
+      "$lte": maxTime
+    }
+  }, (err, data) => {
+    if (err) {
+      console.log(err);
+    } else {
+      let timeDurtion = [month];
+      for (let i = 0; i < month; ++i) {
+        timeDurtion[i] = 0;
+      }
+      for (let i = 0; i < data.length; ++i) {
+        ++timeDurtion[data[i].time.getMonth()];
+      }
+      res.json({
+        data: timeDurtion
+      });
+    }
+  })
 });
 
 module.exports = router

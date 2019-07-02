@@ -80,8 +80,19 @@
           <el-input v-model="selectedTable.meeting_content" disabled></el-input>
         </el-form-item>
         <el-form-item label="会议附图" label-width="140px">
-          <!-- 图片上传到服务器！ -->
-          <el-input v-model="selectedTable.meeting_photo_url" disabled></el-input>
+          <div class="upload-container">
+            <el-upload
+              action="https://jsonplaceholder.typicode.com/posts/"
+              list-type="picture-card"
+              :on-preview="handlePictureCardPreview"
+              :on-remove="handleRemove"
+            >
+              <i class="el-icon-plus"></i>
+            </el-upload>
+            <el-dialog :visible.sync="dialogVisible">
+              <img width="100%" :src="dialogImageUrl" alt>
+            </el-dialog>
+          </div>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -111,11 +122,23 @@
           <el-input v-model="selectedTable.meeting_absentee"></el-input>
         </el-form-item>
         <el-form-item label="会议内容" label-width="140px">
-          <el-input v-model="selectedTable.meeting_content"></el-input>
+          <el-input v-model="selectedTable.meeting_content"></el-input>`
         </el-form-item>
         <el-form-item label="会议附图" label-width="140px">
           <!-- 图片上传到服务器！ -->
-          <el-input v-model="selectedTable.meeting_photo_url"></el-input>
+          <div class="upload-container">
+            <el-upload
+              action="https://jsonplaceholder.typicode.com/posts/"
+              list-type="picture-card"
+              :on-preview="handlePictureCardPreview"
+              :on-remove="handleRemove"
+            >
+              <i class="el-icon-plus"></i>
+            </el-upload>
+            <el-dialog :visible.sync="dialogVisible">
+              <img width="100%" :src="dialogImageUrl" alt>
+            </el-dialog>
+          </div>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -149,8 +172,19 @@
           <el-input v-model="addedTable.meeting_content"></el-input>
         </el-form-item>
         <el-form-item label="会议附图" label-width="140px">
-          <!-- 图片上传到服务器！ -->
-          <el-input v-model="addedTable.meeting_photo_url"></el-input>
+          <div class="upload-container">
+            <el-upload
+              action="https://jsonplaceholder.typicode.com/posts/"
+              list-type="picture-card"
+              :on-preview="handlePictureCardPreview"
+              :on-remove="handleRemove"
+            >
+              <i class="el-icon-plus"></i>
+            </el-upload>
+            <el-dialog :visible.sync="dialogVisible">
+              <img width="100%" :src="dialogImageUrl" alt>
+            </el-dialog>
+          </div>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -178,13 +212,22 @@ export default {
       addedTable: {},
       detailsDialogFormVisible: false,
       editDialogFormVisible: false,
-      addDialogFormVisible: false
+      addDialogFormVisible: false,
+      dialogImageUrl: "",
+      dialogVisible: false
     };
   },
   mounted() {
     this.getMeetingInfoTable();
   },
   methods: {
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
     getMeetingInfoTable() {
       const data = {
         page: this.currentPage,
@@ -289,33 +332,45 @@ export default {
       this.addDialogFormVisible = true;
     },
     handleDelete(row) {
-      const data = {
-        _id: row._id
-      };
+      this.$confirm("确定删除?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        const data = {
+          _id: row._id
+        };
 
-      this.$http
-        .post("/api/meetingRecord/delete", data)
-        .then(res => {
-          this.getMeetingInfoTable();
-          this.$message({
-            message: "删除成功！",
-            type: "success"
+        this.$http
+          .post("/api/meetingRecord/delete", data)
+          .then(res => {
+            this.getMeetingInfoTable();
+            this.$message({
+              message: "删除成功！",
+              type: "success"
+            });
+          })
+          .catch(err => {
+            this.$message({
+              message: "删除失败!",
+              type: "error"
+            });
           });
-        })
-        .catch(err => {
-          this.$message({
-            message: "删除失败!",
-            type: "error"
-          });
-        });
 
-      this.getMeetingInfoTable();
+        this.getMeetingInfoTable();
+      });
     }
   }
 };
 </script>
 
 <style lang="scss">
+@import "src/assets/scss/index";
+
+.upload-container {
+  text-align: start;
+  border-radius: 4px;
+}
 </style>
 
 

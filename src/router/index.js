@@ -11,12 +11,11 @@ const constRouterMap = [{
   {
     path: '/management',
     name: 'Management',
-    meta: ['后台报到统计'],
     component: () => import('@/views/Management'),
     children: [{
         path: '/partyMemRepCount',
         name: 'PartyMemRepCount',
-        meta: ['后台报到统计'],
+        meta: ['Home'],
         component: () => import('@/views/PartyMemRepCount'),
       },
       {

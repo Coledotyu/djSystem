@@ -5,6 +5,8 @@
 </template>
 
 <script>
+import time from "../../../utils/date.js";
+
 export default {
   data() {
     return {
@@ -33,7 +35,7 @@ export default {
         xAxis: {
           type: "category",
           boundaryGap: false,
-          data: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
+          data: []
         },
         yAxis: {
           type: "value"
@@ -43,7 +45,7 @@ export default {
             name: "报到人数",
             type: "line",
             stack: "总量",
-            data: [7, 5, 4, 7, 9, 10, 1]
+            data: []
           }
         ]
       }
@@ -54,11 +56,29 @@ export default {
   },
   methods: {
     drawLine() {
-      console.log("drawline");
-      let myChart = this.$echarts.init(
-        document.getElementById("party-mem-rep-count")
-      );
-      myChart.setOption(this.option);
+      let now = time.split("-");
+      let year = parseInt(now[0]); // 传给后端查询该年中所有的document
+      let month = parseInt(now[1]);
+      for (let i = 0; i < month; ++i) {
+        this.option.xAxis.data[i] = i + 1 + "月";
+      }
+      const data = {
+        time: new Date(),
+        year: year,
+        month: month
+      };
+      this.$http
+        .post("/api/partyMem/rep/perMonth/count", data)
+        .then(res => {
+          let myChart = this.$echarts.init(
+            document.getElementById("party-mem-rep-count")
+          );
+          this.option.series[0].data = res.data.data;
+          myChart.setOption(this.option);
+        })
+        .catch(err => {
+          console.log("获取相应月份人数出错！");
+        });
     }
   }
 };
@@ -71,7 +91,7 @@ export default {
   .party-mem-rep-count {
     width: 80%;
     height: 60%;
-    margin:6rem auto;
+    margin: 6rem auto;
   }
 }
 </style>
