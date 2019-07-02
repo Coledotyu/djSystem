@@ -155,40 +155,8 @@ router.post('/partyMem/rep/delete', (req, res) => {
 
 });
 
-// 查看某一党员报到信息
-router.get('/partyMem/rep/query', (req, res) => {
-  if (req.header._id.match(/^[0-9a-fA-F]{24}$/)) {
-    PartyMemRep.findById(req.header._id, (err, data) => {
-      if (err) {
-        res.send({
-          'status': 1001,
-          'data': data
-        });
-      } else {
-        if (data.length > 0) {
-          res.send({
-            'status': 1000,
-            'data': data
-          });
-        } else {
-          res.send({
-            'status': 1001,
-            'data': data
-          });
-        }
-      }
-    });
-  } else {
-    res.json({
-      no: 0,
-      message: req.body._id + '！不存在',
-    });
-  }
-
-});
-
-// 查看所有党员报到信息
-router.get('/partyMem/rep/query/all', (req, res) => {
+// 返回党员报到document的长度
+router.get('/partyMem/rep/query/count', (req, res) => {
   PartyMemRep.find((err, data) => {
     if (err) {
       res.send({
@@ -204,7 +172,7 @@ router.get('/partyMem/rep/query/all', (req, res) => {
       } else {
         res.send({
           'status': 1001,
-          'data': data
+          'data': data.length
         });
       }
     }
@@ -326,41 +294,8 @@ router.post('/partyMem/info/modify', (req, res) => {
 
 });
 
-// 党员信息管理，查看某一党员信息
-router.get('/partyMem/info/query', (req, res) => {
-
-  if (req.header._id.match(/^[0-9a-fA-F]{24}$/)) {
-    PartyMemInfo.findById(req.header._id, (err, data) => {
-      if (err) {
-        res.send({
-          'status': 1001,
-          'data': data
-        });
-      } else {
-        if (data.length > 0) {
-          res.send({
-            'status': 1000,
-            'data': data,
-          });
-        } else {
-          res.send({
-            'status': 1001,
-            'data': data
-          });
-        }
-      }
-    });
-  } else {
-    res.json({
-      no: 0,
-      message: req.body._id + '！不存在',
-    });
-  }
-
-});
-
-// 党员信息管理，查看所有党员信息
-router.get('/partyMem/info/query/all', (req, res) => {
+// 党员信息管理，所有党员信息的document长度
+router.get('/partyMem/info/query/count', (req, res) => {
 
 
   PartyMemInfo.find((err, data) => {
@@ -497,41 +432,8 @@ router.post('/meetingRecord/delete', (req, res) => {
 
 });
 
-// 会议信息管理，查看某一会议信息
-router.get('/meetingRecord/query', (req, res) => {
-
-  if (req.header._id.match(/^[0-9a-fA-F]{24}$/)) {
-    MeetingInfo.findById(req.header._id, (err, data) => {
-      if (err) {
-        res.send({
-          'status': 1001,
-          'data': data
-        });
-      } else {
-        if (data.length > 0) {
-          res.send({
-            'status': 1000,
-            'data': data,
-          });
-        } else {
-          res.send({
-            'status': 1001,
-            'data': data
-          });
-        }
-      }
-    });
-  } else {
-    res.json({
-      no: 0,
-      message: req.body._id + '！不存在',
-    });
-  }
-
-});
-
-// 会议信息管理，查看所有会议信息
-router.get('/meetingRecord/query/all', (req, res) => {
+// 会议信息管理，返回所有会议信息document的长度
+router.get('/meetingRecord/query/count', (req, res) => {
 
   MeetingInfo.find((err, data) => {
     if (err) {
@@ -666,41 +568,8 @@ router.post('/infoCommunicating/delete', (req, res) => {
 
 });
 
-// 信息交流中心管理，查看信息
-router.get('/infoCommunicating/query', (req, res) => {
-
-  if (req.header._id.match(/^[0-9a-fA-F]{24}$/)) {
-    InfoCommunicating.findById(req.header._id, (err, data) => {
-      if (err) {
-        res.send({
-          'status': 1001,
-          'data': data
-        });
-      } else {
-        if (data.length > 0) {
-          res.send({
-            'status': 1000,
-            'data': data,
-          });
-        } else {
-          res.send({
-            'status': 1001,
-            'data': data
-          });
-        }
-      }
-    });
-  } else {
-    res.json({
-      no: 0,
-      message: req.body._id + '！不存在',
-    });
-  }
-
-});
-
-// 信息交流中心管理，查看所有信息
-router.get('/infoCommunicating/query/all', (req, res) => {
+// 信息交流中心管理，返回document的length
+router.get('/infoCommunicating/query/count', (req, res) => {
 
   InfoCommunicating.find((err, data) => {
     if (err) {
@@ -717,15 +586,15 @@ router.get('/infoCommunicating/query/all', (req, res) => {
       } else {
         res.send({
           'status': 1001,
-          'data': data
+          'data': data.length
         });
       }
     }
   });
 });
 
-// 获取信息交流document的总数
-router.get('/infoCommunicating/count', (req, res) => {
+// 按照分页返回相应的document
+router.post('/infoCommunicating/query/all', (req, res) => {
   
   let page = req.body.page;
   let rows = req.body.rows;
@@ -750,8 +619,7 @@ router.get('/infoCommunicating/count', (req, res) => {
   });
 });
 
-// 获取会议记录document的总数
-router.get('/meetingInfo/count', (req, res) => {
+router.post('/meetingRecord/query/all', (req, res) => {
   
   let page = req.body.page;
   let rows = req.body.rows;
@@ -776,15 +644,15 @@ router.get('/meetingInfo/count', (req, res) => {
   });
 });
 
-// 获取党员报到document的总数
-router.get('/partyMem/rep/count', (req, res) => {
-  
+router.post('/partyMem/rep/query/all', (req, res) => {
+
   let page = req.body.page;
   let rows = req.body.rows;
   let skip = (page - 1) * rows;
   let params = {};
 
   let PartyMemRepModel = PartyMemRep.find(params).skip(skip).limit(rows);
+
   PartyMemRepModel.exec((err, rs) => {
     if(err) {
       res.json({
@@ -792,7 +660,6 @@ router.get('/partyMem/rep/count', (req, res) => {
         message: err.message
       });
     } else {
-
       res.json({
         status: '1000',
         msg: '成功',
@@ -802,8 +669,7 @@ router.get('/partyMem/rep/count', (req, res) => {
   });
 });
 
-// 获取党员的document的总数
-router.get('/partyMem/info/count', (req, res) => {
+router.post('/partyMem/info/query/all', (req, res) => {
   
   let page = req.body.page;
   let rows = req.body.rows;
@@ -818,7 +684,6 @@ router.get('/partyMem/info/count', (req, res) => {
         message: err.message
       });
     } else {
-
       res.json({
         status: '1000',
         msg: '成功',

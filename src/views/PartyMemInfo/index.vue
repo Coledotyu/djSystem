@@ -8,7 +8,7 @@
         style="width: 100%"
         stripe
         border
-        :default-sort="{prop: 'name', order: 'descending'}"
+        :default-sort="{prop: 'party_time', order: 'descending'}"
         @selection-change="handleSelectionChange"
       >
         <el-table-column prop="name" label="姓名" width="80"></el-table-column>
@@ -18,7 +18,7 @@
         <el-table-column prop="party_branch" label="党支部"></el-table-column>
         <el-table-column prop="specialty" label="特长"></el-table-column>
         <el-table-column prop="honor" label="荣誉"></el-table-column>
-        <el-table-column prop="party_time" label="入党时间"></el-table-column>
+        <el-table-column prop="party_time" label="入党时间" sortable></el-table-column>
         <el-table-column fixed="right" label="操作" width="350">
           <template slot-scope="scope">
             <el-button @click="handleDetails(scope.row)" size="mini" type="primary">详情</el-button>
@@ -101,7 +101,7 @@
         <el-form-item label="年龄" label-width="140px">
           <el-input v-model="selectedTable.age"></el-input>
         </el-form-item>
-         <el-form-item label="性别" label-width="140px">
+        <el-form-item label="性别" label-width="140px">
           <el-input v-model="selectedTable.gender"></el-input>
         </el-form-item>
         <el-form-item label="入党时间" label-width="140px">
@@ -138,7 +138,7 @@
         <el-form-item label="年龄" label-width="140px">
           <el-input v-model="addedTable.age"></el-input>
         </el-form-item>
-         <el-form-item label="性别" label-width="140px">
+        <el-form-item label="性别" label-width="140px">
           <el-input v-model="addedTable.gender"></el-input>
         </el-form-item>
         <el-form-item label="入党时间" label-width="140px">
@@ -193,35 +193,24 @@ export default {
   },
   methods: {
     getPartyMemInfoTable() {
+      const data = {
+        page: this.currentPage,
+        rows: this.rows
+      };
       this.$http
-        .get("/api/partyMem/info/query/all")
+        .post("/api/partyMem/info/query/all", data)
         .then(res => {
-          if (res.data.status === 1001) {
-            this.$message({
-              message: "查询党员信息失败！",
-              type: "warning"
-            });
-          } else {
-            const data = {
-              page: this.currentPage,
-              rows: this.rows
-            };
-            this.$http
-              .get("/api/partyMem/info/count", data)
-              .then(res => {
-                this.passTableData = res.data.result;
-                this.passTableData.forEach(function(element) {
-                  element.party_time = formatTime(element.party_time);
-                });
-                this.total = res.data.result.length;
-              })
-              .catch(err => {
-                console.log("获取总数失败");
-              });
-          }
+          this.passTableData = res.data.result;
+          console.log(this.passTableData);
+          this.passTableData.forEach(function(element) {
+            element.party_time = formatTime(element.party_time);
+          });
+          this.$http.get("/api/partyMem/info/query/count").then(res => {
+            this.total = res.data.data.length;
+          });
         })
         .catch(err => {
-          console.log("查询党员信息失败！");
+          console.log("获取总数失败");
         });
     },
     detailsPartyMemInfo() {
@@ -260,7 +249,6 @@ export default {
       this.editDialogFormVisible = false;
     },
     addPartyMemInfoTable() {
-
       const data = this.addedTable;
       this.$http
         .post("/api/partyMem/info/add", data)
@@ -310,9 +298,8 @@ export default {
       this.addDialogFormVisible = true;
     },
     handleDelete(row) {
-
       const data = {
-        _id: row._id,
+        _id: row._id
       };
 
       this.$http
@@ -334,11 +321,10 @@ export default {
       this.getPartyMemInfoTable();
     }
   }
-}
+};
 </script>
 
 <style lang="scss">
-
 </style>
 
 

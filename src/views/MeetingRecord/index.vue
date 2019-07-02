@@ -8,7 +8,7 @@
         style="width: 100%"
         stripe
         border
-        :default-sort="{prop: 'name', order: 'descending'}"
+        :default-sort="{prop: 'meeting_time', order: 'descending'}"
         @selection-change="handleSelectionChange"
       >
         <el-table-column prop="meeting_theme" label="会议主题" width="120"></el-table-column>
@@ -17,7 +17,7 @@
         <el-table-column prop="meeting_attendee" label="参会人"></el-table-column>
         <el-table-column prop="meeting_absentee" label="缺席人"></el-table-column>
         <el-table-column prop="meeting_content" label="会议内容"></el-table-column>
-        <el-table-column prop="meeting_time" label="会议时间"></el-table-column>
+        <el-table-column prop="meeting_time" label="会议时间" sortable></el-table-column>
         <el-table-column fixed="right" label="操作" width="350">
           <template slot-scope="scope">
             <el-button @click="handleDetails(scope.row)" size="mini" type="primary">详情</el-button>
@@ -186,35 +186,23 @@ export default {
   },
   methods: {
     getMeetingInfoTable() {
+      const data = {
+        page: this.currentPage,
+        rows: this.rows
+      };
       this.$http
-        .get("/api/meetingRecord/query/all")
+        .post("/api/meetingRecord/query/all", data)
         .then(res => {
-          if (res.data.status === 1001) {
-            this.$message({
-              message: "查询会议信息失败！",
-              type: "warning"
-            });
-          } else {
-            const data = {
-              page: this.currentPage,
-              rows: this.rows
-            };
-            this.$http
-              .get("/api/meetingInfo/count/", data)
-              .then(res => {
-                this.passTableData = res.data.result;
-                this.passTableData.forEach(function(element) {
-                  element.meeting_time = formatTime(element.meeting_time);
-                });
-                this.total = res.data.result.length;
-              })
-              .catch(err => {
-                console.log("获取总数失败");
-              });
-          }
+          this.passTableData = res.data.result;
+          this.passTableData.forEach(function(element) {
+            element.meeting_time = formatTime(element.meeting_time);
+          });
+          this.$http.get("/api/meetingRecord/query/count").then(res => {
+            this.total = res.data.data.length;
+          });
         })
         .catch(err => {
-          console.log("查询会议信息失败！");
+          console.log("获取总数失败");
         });
     },
     detailsMeetingInfo() {
@@ -231,7 +219,7 @@ export default {
         meeting_attendee: this.selectedTable.meeting_attendee,
         meeting_absentee: this.selectedTable.meeting_absentee,
         meeting_content: this.selectedTable.meeting_content,
-        meeting_photo_url: this.selectedTable.meeting_photo_url,
+        meeting_photo_url: this.selectedTable.meeting_photo_url
       };
       this.$http
         .post("/api/meetingRecord/modify", data)

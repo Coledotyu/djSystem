@@ -174,35 +174,23 @@ export default {
   },
   methods: {
     getPartyMemRepTable() {
+      const data = {
+        page: this.currentPage,
+        rows: this.rows
+      };
       this.$http
-        .get("/api/partyMem/rep/query/all")
+        .post("/api/partyMem/rep/query/all", data)
         .then(res => {
-          if (res.data.status === 1001) {
-            this.$message({
-              message: "查询党员报到信息失败！",
-              type: "warning"
-            });
-          } else {
-            const data = {
-              page: this.currentPage,
-              rows: this.rows
-            };
-            this.$http
-              .get("/api/partyMem/rep/count", data)
-              .then(res => {
-                this.passTableData = res.data.result;
-                this.passTableData.forEach(function(element) {
-                  element.time = formatTime(element.time);
-                });
-                this.total = res.data.result.length;
-              })
-              .catch(err => {
-                console.log("获取总数失败");
-              });
-          }
+          this.passTableData = res.data.result;
+          this.passTableData.forEach(function(element) {
+            element.time = formatTime(element.time);
+          });
+          this.$http.get('/api/partyMem/rep/query/count').then(res => {
+            this.total = res.data.data.length;
+          });
         })
         .catch(err => {
-          console.log("查询党员报到信息失败！");
+          console.log("获取总数失败");
         });
     },
     detailsPartyMemRep() {
@@ -289,7 +277,6 @@ export default {
       this.addDialogFormVisible = true;
     },
     handleDelete(row) {
-
       const data = {
         _id: row._id
       };

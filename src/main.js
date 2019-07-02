@@ -10,10 +10,12 @@ import '@/assets/scss/index.scss';
 import '@/assets/scss/element';
 import components from '@/components';
 import element from 'element-ui';
+import echarts from 'echarts';
 
 Vue.use(element);
 Vue.use(components);
 
+Vue.prototype.$echarts = echarts;
 Vue.prototype.$http = axios;
 
 Vue.config.productionTip = false;

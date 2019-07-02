@@ -8,7 +8,7 @@
         style="width: 100%"
         stripe
         border
-        :default-sort="{prop: 'post_theme', order: 'descending'}"
+        :default-sort="{prop: 'published_time', order: 'descending'}"
         @selection-change="handleSelectionChange"
       >
         <el-table-column prop="post_theme" label="信息主题" width="80"></el-table-column>
@@ -17,7 +17,7 @@
         <el-table-column prop="post_content_salary" label="薪水/元"></el-table-column>
         <el-table-column prop="post_content_duration" label="工作时长/h"></el-table-column>
         <el-table-column prop="post_content_comms" label="联系方式"></el-table-column>
-        <el-table-column prop="published_time" label="发布时间"></el-table-column>
+        <el-table-column prop="published_time" label="发布时间" sortable></el-table-column>
         <el-table-column fixed="right" label="操作" width="350">
           <template slot-scope="scope">
             <el-button @click="handleDetails(scope.row)" size="mini" type="primary">详情</el-button>
@@ -157,7 +157,7 @@ export default {
     return {
       passTableData: [],
       multipleSelection: [],
-      rows: 3,
+      rows: 10,
       total: Number,
       currentPage: 1,
       offset: 0,
@@ -174,36 +174,23 @@ export default {
   },
   methods: {
     getInfoCommunicatingTable() {
+      const data = {
+        page: this.currentPage,
+        rows: this.rows
+      };
       this.$http
-        .get("/api/infoCommunicating/query/all")
+        .post("/api/infoCommunicating/query/all", data)
         .then(res => {
-          if (res.data.status === 1001) {
-            this.$message({
-              message: "查询信息失败！",
-              type: "warning"
-            });
-          } else {
-            const data = {
-              page: this.currentPage,
-              rows: this.rows
-            };
-            this.$http
-              .get("/api/infoCommunicating/count", data)
-              .then(res => {
-                console.log(res.data.result);
-                this.passTableData = res.data.result;
-                this.passTableData.forEach(function(element) {
-                  element.published_time = formatTime(element.published_time);
-                });
-                this.total = res.data.result.length;
-              })
-              .catch(err => {
-                console.log("获取总数失败");
-              });
-          }
+          this.passTableData = res.data.result;
+          this.passTableData.forEach(function(element) {
+            element.published_time = formatTime(element.published_time);
+          });
+          this.$http.get("/api/infoCommunicating/query/count").then(res => {
+            this.total = res.data.data.length;
+          });
         })
         .catch(err => {
-          console.log("查询信息失败！");
+          console.log("获取总数失败");
         });
     },
     detailsInfoCommunicating() {
