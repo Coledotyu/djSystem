@@ -10,7 +10,6 @@ import time from "../../../utils/date.js";
 export default {
   data() {
     return {
-      msg: "党员报到统计图：",
       option: {
         title: {
           text: "党员报到统计图"
@@ -46,7 +45,7 @@ export default {
             type: "line",
             stack: "总量",
             data: []
-          }
+          },
         ]
       }
     };

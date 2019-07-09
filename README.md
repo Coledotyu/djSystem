@@ -1,6 +1,6 @@
 # djsystem
 
->  Xujiagou grassroots party building
+> 一个基于vue、express、mongodb前后端分离的许家沟基层党建简易后台管理系统。
 
 ## Build Setup
 
@@ -26,5 +26,16 @@ npm run e2e
 # run all tests
 npm test
 ```
+
+## preview
+
+1. 登录
+![登录](/static/readme/login.png)
+
+2. home页
+[home](/static/readme/home.png)
+
+3. 党员报到系统
+![partyMemRep](/static/readme/partyMemRep.png)
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).

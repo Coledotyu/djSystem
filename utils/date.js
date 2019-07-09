@@ -6,3 +6,4 @@ let day = date.getDate();
 let time = year + '-' + month + '-' + day;
 
 module.exports = time;
+// 2019-07-04 ["2019", "07", "04"]

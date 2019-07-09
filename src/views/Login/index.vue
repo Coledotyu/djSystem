@@ -14,7 +14,7 @@
           <el-button type="primary" @click="loginFormSubmit()" class="login-button">登录</el-button>
         </el-form-item>
       </el-form>
-      <span style="color: #909DB7; font-size: 10px;">@ 2019 Leooel All rights reserved.</span>
+      <span style="color: #909DB7; font-size: 10px;">@ 2019 Honeysyt All rights reserved.</span>
     </div>
   </div>
 </template>
