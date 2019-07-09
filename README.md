@@ -33,7 +33,7 @@ npm test
 ![登录](https://github.com/syt-honey/djSystem/blob/master/static/images/readme/login.png)
 
 2. home页
-[home](https://github.com/syt-honey/djSystem/blob/master/static/images/readme/home.png)
+![home](https://github.com/syt-honey/djSystem/blob/master/static/images/readme/home.png)
 
 3. 党员报到系统
 ![partyMemRep](https://github.com/syt-honey/djSystem/blob/master/static/images/readme/partyMemRep.png)
