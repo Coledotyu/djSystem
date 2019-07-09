@@ -30,12 +30,12 @@ npm test
 ## preview
 
 1. 登录
-![登录](/static/readme/login.png)
+![登录](https://github.com/syt-honey/djSystem/blob/master/static/images/readme/login.png)
 
 2. home页
-[home](/static/readme/home.png)
+[home](https://github.com/syt-honey/djSystem/blob/master/static/images/readme/home.png)
 
 3. 党员报到系统
-![partyMemRep](/static/readme/partyMemRep.png)
+![partyMemRep](https://github.com/syt-honey/djSystem/blob/master/static/images/readme/partyMemRep.png)
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
